@@ -23,6 +23,7 @@ import {
   Scale,
   ShieldCheck,
   ShoppingBasket,
+  Sparkles,
   Wallet,
   Zap,
 } from "lucide-react";
@@ -51,22 +52,32 @@ export function ProductsSection() {
       <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
         {copy.items.map((p, i) => {
           const Icon = PRODUCT_ICONS[i];
+          const featured = i === 1;
+          const ink = featured ? "text-bg" : "text-ink";
+          const muted = featured ? "text-bg/70" : "text-muted";
           return (
-            <article key={p.title} className="crystal-card flex flex-col space-y-4 rounded-2xl p-5 sm:rounded-3xl sm:p-7">
+            <article
+              key={p.title}
+              className={`flex flex-col space-y-4 rounded-2xl p-5 sm:rounded-3xl ${
+                featured ? "bg-ink text-bg shadow-xl sm:p-8 md:-translate-y-1" : "crystal-card sm:p-6"
+              }`}
+            >
               <div className="flex items-center justify-between">
-                <span className="font-lcd text-xs text-muted">{p.kicker}</span>
-                <Icon className="h-5 w-5 text-ink" />
+                <span className={`font-lcd text-xs ${muted}`}>{p.kicker}</span>
+                <Icon className={`h-5 w-5 ${ink}`} />
               </div>
-              <h3 className="text-xl font-extrabold leading-tight text-ink">{p.title}</h3>
-              <p className="font-semibold text-ink">{p.lead}</p>
-              <p className="flex-1 text-sm text-muted sm:text-base">
+              <h3 className={`${featured ? "text-2xl" : "text-lg"} font-extrabold leading-tight ${ink}`}>{p.title}</h3>
+              <p className={`font-semibold ${ink}`}>{p.lead}</p>
+              <p className={`flex-1 text-sm ${muted} sm:text-base`}>
                 {p.body}{" "}
                 {p.tip && (
                   <span className="group relative inline-flex align-middle">
                     <button
                       type="button"
                       aria-label={p.tip}
-                      className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-line text-muted transition-colors hover:text-ink"
+                      className={`inline-flex h-4 w-4 items-center justify-center rounded-full border transition-colors ${
+                        featured ? "border-bg/30 text-bg/60 hover:text-bg" : "border-line text-muted hover:text-ink"
+                      }`}
                     >
                       <Info className="h-3 w-3" />
                     </button>
@@ -76,7 +87,7 @@ export function ProductsSection() {
                   </span>
                 )}
               </p>
-              <Link href={PRODUCT_HREFS[i]} className="inline-flex items-center gap-2 pt-2 text-sm font-bold text-ink">
+              <Link href={PRODUCT_HREFS[i]} className={`inline-flex items-center gap-2 pt-2 text-sm font-bold ${ink}`}>
                 {p.cta} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </article>
@@ -339,7 +350,7 @@ export function LiquidityFirstBanner() {
   );
 }
 
-const SOON_ICONS: LucideIcon[] = [Landmark, Layers, Globe2, CreditCard];
+const SOON_ICONS: LucideIcon[] = [Landmark, Layers, Globe2, CreditCard, Sparkles];
 const BADGE_ICONS: LucideIcon[] = [ShieldCheck, Lock, Zap, CheckCircle2];
 
 export function SoonSection() {
@@ -348,7 +359,7 @@ export function SoonSection() {
     <>
       <section className="space-y-5 sm:space-y-6">
         <h2 className="text-2xl font-extrabold sm:text-3xl">{soon}</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-5">
           {soonItems.map(([title, desc], i) => {
             const Icon = SOON_ICONS[i];
             return (

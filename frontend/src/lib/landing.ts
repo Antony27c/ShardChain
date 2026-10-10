@@ -177,6 +177,7 @@ const es: LandingCopy = {
     ["ETFs sectoriales", "Agro, energía y bancos."],
     ["Carbono agro", "Siembra directa verificada."],
     ["Tarjeta Mastercard", "Pagá con Mastercard gastando el saldo de tus acciones."],
+    ["Productos DeFi", "Lo mejor del mundo DeFi se combina con el mercado tradicional."],
   ],
   badges: [
     ["Diseñado para", "Sandbox CNV"],
@@ -352,6 +353,7 @@ const en: LandingCopy = {
     ["Sector ETFs", "Agri, energy and banks."],
     ["Agro carbon", "Verified no-till."],
     ["Mastercard card", "Pay with Mastercard, spending from your stocks."],
+    ["DeFi products", "The best of the DeFi world meets traditional markets."],
   ],
   badges: [
     ["Designed for", "CNV sandbox"],
