@@ -251,7 +251,7 @@ export default function StocksPage() {
                   onChange={(e) => setAlycAccount(e.target.value)}
                   placeholder={t("Número de comitente y ALYC", "Account number and broker")}
                   aria-label={t("Número de comitente y ALYC", "Account number and broker")}
-                  className="w-full rounded-lg border border-line bg-bg/70 px-3 py-1.5 text-xs text-ink"
+                  className="w-full rounded-lg border border-line bg-bg/70 px-3 py-1.5 text-base text-ink sm:text-xs"
                 />
                 <button
                   type="button"
