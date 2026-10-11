@@ -96,7 +96,7 @@ export default function LotPage() {
     <div className="mx-auto max-w-7xl px-4 pb-20 pt-8 md:px-6 md:pt-10">
       {back}
 
-      <div className="mt-6 grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-12">
+      <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-[5fr_7fr] lg:gap-12">
         <div className="contents lg:sticky lg:top-6 lg:block lg:self-start">
           <section className="order-1">
             <header className="reveal" style={step(0)}>
