@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { useLanding } from "@/lib/landing";
 
 export function DynamicHeroText() {
@@ -73,11 +73,11 @@ export function DynamicHeroText() {
             ))}
           </span>
           <span
-            className="hero-slot inline-block min-w-0 whitespace-nowrap align-baseline leading-[1.15] transition-[width] duration-500 ease-out"
-            style={{ width: slotWidth ?? undefined }}
+            className="hero-slot inline-block min-w-0 max-w-full align-baseline leading-[1.15] transition-[width] duration-500 ease-out sm:w-[var(--slot-w,auto)] sm:whitespace-nowrap"
+            style={{ "--slot-w": slotWidth ? `${slotWidth}px` : undefined } as CSSProperties}
           >
             <span
-              className={`inline whitespace-nowrap transition-opacity duration-500 ease-out ${
+              className={`inline transition-opacity duration-500 ease-out ${
                 isAnimating ? "opacity-0" : "opacity-100"
               }`}
             >

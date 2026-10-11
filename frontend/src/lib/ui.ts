@@ -8,7 +8,7 @@ export const button = {
 };
 
 export const field =
-  "mt-2 w-full rounded-xl border border-line bg-bg/70 px-3 py-2 text-ink transition-colors placeholder:text-muted focus:border-accent";
+  "mt-2 w-full rounded-xl border border-line bg-bg/70 px-3 py-2 text-base text-ink transition-colors sm:text-sm placeholder:text-muted focus:border-accent";
 
 export const panel = "crystal-card rounded-2xl";
 

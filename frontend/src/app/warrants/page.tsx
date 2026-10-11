@@ -153,7 +153,7 @@ export default function WarrantsPage() {
                 step="50"
                 value={tons}
                 onChange={(e) => setTons(Math.max(50, Number(e.target.value)))}
-                className={`${mock.input} text-xs`}
+                className={`${mock.input} sm:text-xs`}
               />
             </label>
 
