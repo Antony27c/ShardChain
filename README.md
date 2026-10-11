@@ -70,6 +70,8 @@ flowchart TB
 - **No backend database.** All state is read from the chain. The two server routes only exist to keep an API token (HyperSync) and a heavy SDK (Kuru) out of the browser bundle.
 - **Contracts** (`contracts/src`): `KycRegistry` (verified addresses), `IssuanceFactory` (creates a `ShardToken` and its `Offering` per lot and enforces that supply covers the hard cap), `Offering` (fixed-price raise with soft cap, hard cap, deadline, claim and refund, reentrancy-guarded), `ShardToken` (fixed-supply ERC-20 with asset metadata) and `HarvestRedemption` (one-time settlement per lot and pro-rata redemption).
 - **Kuru** is used as-is: markets are deployed through Kuru's Router (V1 `deployProxy`) and traded through Kuru's market contracts. FractaChain does not run its own order book.
+- **Onchain asset sheet:** every lot page shows the asset (crop, tons, season), total supply and the addresses of the issuer, token, offering, Kuru market and vault, all read from the chain and linked to the explorer. It shows no data that cannot be verified onchain.
+- **Bilingual and mobile-ready:** the whole interface is available in Spanish and English and adapts to phone screens.
 - **Mockups:** the Merval, Forwards and Warrants pages are product simulators and do not send transactions. The live flow is the lots flow described above.
 
 ## Why Monad

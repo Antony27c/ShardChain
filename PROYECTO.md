@@ -1,7 +1,8 @@
 # FractaChain: documentación del proyecto
 
-> Documento vivo para el equipo. Estado: **en build**, contratos con tests en verde y flujo completo probado en **Monad testnet real** (con un USDC mock).
-> Última actualización: 6 de octubre de 2026.
+> Registro interno del equipo: decisiones, estado y preguntas abiertas, en orden cronológico. La presentación del proyecto está en el [`README.md`](README.md).
+> Estado: **en build**, contratos con tests en verde, flujo completo probado en **Monad testnet real** (con un USDC mock) y app desplegada en https://fractachain-monad.up.railway.app.
+> Última actualización: 10 de octubre de 2026.
 
 ## 1. Qué es FractaChain
 
@@ -21,7 +22,7 @@ Monad Metropolis, track **Onchain Finance & Trading**.
 
 | Dato | Valor |
 |---|---|
-| Ventana de build | 1 de septiembre al 13 de octubre de 2026 (quedan 10 días) |
+| Ventana de build | 1 de septiembre al 13 de octubre de 2026 |
 | Judging | 14 al 27 de octubre |
 | Ganadores | 3 de noviembre |
 | Premio del track | US$30.000 entre 3 equipos |
@@ -54,12 +55,12 @@ Lo que dice la documentación de Kuru (docs.kuru.io):
 |---|---|---|
 | 1 | Mercado secundario en Kuru | No hay `OrderBook.sol` propio. |
 | 2 | KYC solo en la licitación primaria | Un `KycRegistry` define quién puede participar en el `Offering`. El shard es un ERC-20 normal que circula libre en Kuru. |
-| 3 | Un shard es una fracción del valor de venta de la cosecha | Sin liquidación onchain en el MVP. |
+| 3 | Un shard es una fracción del valor de venta de la cosecha | En el plan inicial no había liquidación onchain. Se agregó el 8 de octubre con `HarvestRedemption` (ver sección 9, punto 7). |
 | 4 | Licitación a precio fijo, primero en llegar | Con soft cap, hard cap y deadline. Si supera el hard cap, la contribución revierte. |
 | 5 | Moneda de pago: el USDC oficial de testnet de Kuru | Ver sección 7: tiene restricciones. |
 | 6 | Demo: un solo lote de soja | Si no llegamos, parte queda en mock. |
 | 7 | Sin backend Express | El frontend lee onchain. |
-| 8 | El mercado en Kuru se crea con un script offchain | Cuando termina la licitación, un script usa el SDK de Kuru para calcular las precisiones, llamar a `deployProxy` y sembrar el vault. En la UI, el emisor lo ve como un botón "Abrir mercado". |
+| 8 | El mercado en Kuru se crea con un script offchain | Cuando termina la licitación, un script usa el SDK de Kuru para calcular las precisiones, llamar a `deployProxy` y sembrar el vault. En la UI, el emisor lo ve como un botón "Abrir mercado". Desde el 7 de octubre el botón crea el mercado y siembra el vault desde el navegador, con las precisiones calculadas en una ruta de servidor (`/api/kuru/precisions`); el script queda como alternativa por línea de comandos. |
 | 9 | `CreditVault` y stack Stellar | Fuera del MVP. Todo lo de Stellar (Soroban, stellar-sdk, Freighter, XLM) se elimina. |
 | 10 | Wallet: Privy | Wallet embebida con login por email o redes. Coincide con la wallet de Kuru y suma al bounty de Privy. Se descartó Dynamic. |
 
@@ -107,9 +108,9 @@ Hay un primer deploy anterior (con el USDC de Kuru como moneda de pago) que qued
 
 Los cinco contratos están verificados en Sourcify (`exact_match`).
 
-**Qué falta probar:** repetir el flujo con el USDC oficial de testnet de Kuru y el frontend contra estas direcciones.
+**Qué falta probar:** repetir el flujo con el USDC oficial de testnet de Kuru. El frontend ya se probó contra estas direcciones (ver sección 9).
 
-**Frontend:** Next.js + wagmi + viem. Wallet embebida con Privy.
+**Frontend:** Next.js + wagmi + viem. Wallet embebida con Privy y gas patrocinado. Desplegado en Railway. Páginas: landing, licitaciones (`/market`), detalle del lote con ficha del activo onchain, Orderbook con el libro L2 de Kuru (`/orderbook`), emisión de lotes (`/create`), historial (`/actividad`) y simuladores sin transacciones de Merval, Forwards y Warrants. Toda la interfaz está en español e inglés y se adapta a celular.
 
 **Direcciones de Kuru en testnet.** La documentación de Kuru da dos juegos de direcciones. Verificado el 3 de octubre en Monad testnet:
 
@@ -141,9 +142,9 @@ Implicancias:
 |---|---|
 | 1-2 (3-4 oct) | **Hecho:** entorno Foundry, `KycRegistry`, `ShardToken`, `Offering`, `IssuanceFactory` con tests, scripts de deploy (testnet y `DeployLocal` para anvil), ABIs y guía para el frontend, script de Kuru (probado en fork, modo `--offering`), invariantes del `Offering` (128k llamadas sin violaciones) y revisión de seguridad propia con fixes. |
 | 3-4 | **Hecho (6 oct):** deploy en testnet con una wallet de prueba, licitación completa y script de Kuru con shards reales (con `mUSDC`). Contratos verificados en Sourcify. **Pendiente:** repetir con el USDC oficial de Kuru y revisión externa. |
-| 5-7 | Frontend: licitación (contribuir, reembolsar) y vista del mercado. |
-| 8 | Wallet embebida, pulido y flujo completo de punta a punta. |
-| 9-10 | Video de demo, README, lectura final de las bases de Kuru y envío. |
+| 5-7 | **Hecho (6-8 oct):** frontend de la licitación (aportar, finalizar, reclamar, reembolsar) y mercado secundario conectado a Kuru (abrir mercado, comprar, vender, agregar y retirar liquidez). |
+| 8 | **Hecho (8 oct):** wallet embebida de Privy con gas patrocinado, menú de cuenta, redención de la cosecha (`HarvestRedemption`), historial con Envio HyperSync y deploy en Railway. Flujo completo probado de punta a punta con una cuenta nueva sin MON. |
+| 9-10 | **Hecho (9-10 oct):** README para el envío, licencia MIT, plan legal y operativo, modelo de negocio, página Orderbook, ficha del activo, interfaz en inglés y adaptación a celular. **Pendiente:** video de demo, lectura final de las bases de Kuru y Privy, y envío. |
 
 ## 9. Preguntas abiertas
 
@@ -153,10 +154,10 @@ Implicancias:
 4. **Roles del equipo.** Contratos e integración con Kuru: Antony. Frontend: Juli.
 5. **Pendiente de UX: onboarding de la wallet embebida (Privy).** Probando el login se vio que un usuario nuevo no puede operar y la app no se lo explica bien:
    - ~~La wallet nace sin MON y el primer intento de transacción falla con "Signer had insufficient balance".~~ **Resuelto (8 de octubre) con gas patrocinado de Privy:** con la wallet embebida, `useTx` envía las transacciones con `sponsor: true` y la app paga el gas (Privy Dashboard > Fee sponsorship, Monad Testnet, con "Allow transactions from the client" activado). Probado con una cuenta nueva por email y 0 MON: KYC, carga de USDC, compra y venta salieron bien y el dashboard no registró consumo. Con wallets externas se firma como antes. Nota: en Brave, con Shields activado, la wallet embebida no se crea; en Edge funciona.
-   - La dirección de la wallet se ve cortada (`0xC3Ab...7B76`) y no se podía copiar. Se agregó un clic para copiar y un tooltip en `LoginButton.tsx` como parche, pero falta una pantalla o menú de cuenta con la dirección completa, botón de copiar y el saldo de MON y USDC.
+   - ~~La dirección de la wallet se ve cortada (`0xC3Ab...7B76`) y no se podía copiar.~~ **Resuelto (8 de octubre):** el menú de cuenta muestra la dirección completa, botón de copiar y los saldos de MON, USDC y shards (ver punto 8).
    - ~~Botón "Cargar fondos de prueba".~~ **Hecho:** quien tiene 0 USDC ve "Cargar 1.000 USDC de prueba" en el panel del lote (mint del mUSDC, gas patrocinado). Recorrido probado desde una cuenta nueva sin MON: email, KYC, cargar USDC, comprar 10 USDC (90,19 MAIZ27) y vender 5 MAIZ27.
    - ~~El panel "Mercado secundario" no estaba conectado.~~ **Hecho (7 de octubre):** el panel de la página del lote lee el mercado onchain (bid, ask, comisiones, vault y links al explorer) y el emisor tiene un botón "Abrir mercado" que crea el mercado y siembra el vault desde el navegador con su wallet. Los mercados se registran en `frontend/src/lib/kuru.ts` (`KURU_MARKETS`, ya incluye `0x24B6...9B7f`); los abiertos desde la UI se guardan en `localStorage` hasta agregarlos a ese registro. La app web de Kuru solo muestra mainnet, por eso no se enlaza a kuru.io. Probado de punta a punta en testnet con un lote nuevo (MAIZ27, token `0x40A7...A074`): aporte hasta el hard cap, `finalize` y "Abrir mercado" desde la UI crearon el mercado `0x0263...aaF6` y sembraron el vault (bid 0,099 / ask 0,100). **Comprar y vender desde la app (7 de octubre):** el panel del mercado tiene pestañas Comprar/Vender con órdenes de mercado contra el order book de Kuru (`placeAndExecuteMarketBuy/Sell`), estimación previa, tolerancia de slippage (0,5 / 1 / 3 %) y aprobación del token solo si hace falta. Las unidades se validaron en un fork de testnet: una compra de 1 USDC dio 9,92 MAIZ27 (igual que la estimación), la venta de 10 MAIZ27 dio USDC y un `minAmountOut` imposible revirtió con `SlippageExceeded`. Probado también en el navegador con la wallet de Privy sobre el mercado MAIZ27: una compra de 1 USDC dio 9,92 MAIZ27 y una venta de 5 MAIZ27 devolvió unos 0,5 USDC, con el bid y el ask moviéndose en cada operación.
-   - El formulario "Emitir un lote" no avisa si los topes son inalcanzables para quien prueba. Por ejemplo, un mínimo de 100.000 USDC con un saldo de 50.000. Mostrar el saldo de USDC junto al formulario y advertir cuando el mínimo o el máximo superan lo que el usuario puede aportar, al menos en la demo.
+   - ~~El formulario "Emitir un lote" no avisa si los topes son inalcanzables para quien prueba.~~ **Resuelto (9 de octubre):** el formulario muestra el saldo de USDC, avisa cuando no alcanza el mínimo (la licitación terminaría en reembolso) y ofrece un botón "Usar topes de demo (100 / 250 USDC)".
 6. **Liquidez del mercado secundario.** El vault de MAIZ27 se sembró con solo 1.000 shards y 100 USDC, y una compra de 10 USDC subió el precio de 0,10 a ~0,12 (+20 %), con un precio promedio pagado de ~0,111. No es un error: es poca profundidad.
    - **Para la demo:** sembrar un mercado con más liquidez (por ejemplo 50.000 shards y 5.000 USDC) para que el precio se mueva de forma realista en el video.
    - **Para el bounty de Kuru ("estrategia de liquidez y formación inicial del mercado"):** el emisor siembra el vault con parte de los fondos recaudados y los shards no vendidos, al precio de la licitación. Para dar profundidad al libro hace falta además un market maker o un incentivo a proveedores de liquidez. Este caso sirve como evidencia de por qué hace falta.
@@ -180,9 +181,9 @@ Resuelta: los parámetros del lote de demo (ver sección 6).
 
 ## 11. Roadmap (fuera del MVP)
 
-- Liquidación de la cosecha y redención de shards.
-- Forwards de cosecha con escrow.
-- Acciones del Merval tokenizadas, con proof of reserve (Chainlink CRE).
+- ~~Liquidación de la cosecha y redención de shards.~~ Hecho en el MVP con `HarvestRedemption`.
+- Forwards de cosecha con escrow (hoy hay un simulador sin transacciones en `/forwards`).
+- Acciones del Merval tokenizadas, con proof of reserve (Chainlink CRE) (hoy hay un simulador sin transacciones en `/stocks`).
 - Crédito contra shards (`CreditVault`), con tasa según historial onchain.
 - Perpetuos con funding por bloque.
 - Un wrapper permisionado que extienda el KYC al mercado secundario.
