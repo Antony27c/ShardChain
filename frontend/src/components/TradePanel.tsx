@@ -179,7 +179,7 @@ export function TradePanel({
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-muted">{t("Tolerancia", "Slippage")}</span>
             {SLIPPAGE_OPTIONS_BPS.map((bps) => (
               <button

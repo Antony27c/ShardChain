@@ -7,7 +7,8 @@ import { useLanding } from "@/lib/landing";
 import { useI18n } from "@/lib/i18n";
 
 const heading = "mb-3 text-xs font-extrabold uppercase tracking-wider text-ink";
-const link = "transition-colors hover:text-ink";
+const link = "inline-flex min-h-11 items-center transition-colors hover:text-ink sm:min-h-0";
+const list = "sm:space-y-2";
 
 export function Footer() {
   const { footer, nav } = useLanding();
@@ -26,7 +27,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-8">
             <div>
               <h4 className={heading}>{footer.markets}</h4>
-              <ul className="space-y-2">
+              <ul className={list}>
                 <li><Link href="/market" className={link}>{nav.market}</Link></li>
                 <li><Link href="/orderbook" className={link}>{t("nav.orderbook")}</Link></li>
                 <li><Link href="/stocks" className={link}>{nav.stocks}</Link></li>
@@ -36,7 +37,7 @@ export function Footer() {
             </div>
             <div>
               <h4 className={heading}>{footer.platform}</h4>
-              <ul className="space-y-2">
+              <ul className={list}>
                 <li><Link href="/create" className={link}>{t("nav.create")}</Link></li>
                 <li><Link href="/actividad" className={link}>{footer.activity}</Link></li>
               </ul>
