@@ -100,7 +100,7 @@ flowchart TB
 - **Orderbook page.** `/orderbook` shows every listed pair with Kuru's L2 book (12 levels per side, including vault liquidity, refreshed every 10 s). Clicking a level loads that size into the order panel.
 - **Trading.** Market buy and sell orders (`placeAndExecuteMarketBuy/Sell`) with a quote before signing, slippage tolerance (0.5 / 1 / 3 %) enforced as `minAmountOut`, and token approval only when needed.
 - **Liquidity provision.** Anyone can deposit shards and USDC into the market's vault at the current price and withdraw their share later. In a testnet fork, adding 2,000 shards and 241.6 USDC cut the price impact of a 10 USDC buy from ~11 % to ~3 %.
-- **Initial market formation.** The vault is seeded at the primary-offering price, so trading opens anchored to what investors paid. The plan adds a per-lot liquidity reserve and a designated market maker (see the [legal and operational plan](PLAN_LEGAL_OPERATIVO.md#8-liquidez-y-formación-inicial-del-mercado)).
+- **Initial market formation.** The vault is seeded at the primary-offering price, so trading opens anchored to what investors paid. The plan adds a per-lot liquidity reserve and a designated market maker (see the [legal and operations plan](LEGAL_AND_OPERATIONS_PLAN.md#8-liquidity-and-initial-market-formation)).
 - **Activity history.** `/actividad` rebuilds every trade, contribution, claim, liquidity move and redemption from chain data through Envio HyperSync, because Kuru's `Trade` event has no indexed fields.
 
 ## Privy integration (beyond login)
@@ -123,7 +123,7 @@ A shard offered to the public in exchange for a share of a harvest's sale procee
 - **Collateral:** grain deposited with a registered warehouse, backed by electronic deposit certificates and warrants (Law 9643, Decree 640/2024).
 - **Compliance:** VASP (PSAV) registration with the CNV (Law 27,739, RG 1058/2025), KYC/AML, and a permissioned wrapper to extend KYC to the secondary market.
 
-Full plan, in Spanish, with sources, risks, operating cycle and open legal questions: [`PLAN_LEGAL_OPERATIVO.md`](PLAN_LEGAL_OPERATIVO.md).
+Full plan with sources, risks, operating cycle and open legal questions: [`LEGAL_AND_OPERATIONS_PLAN.md`](LEGAL_AND_OPERATIONS_PLAN.md).
 
 ## Business model
 
@@ -142,7 +142,7 @@ Full plan, in Spanish, with sources, risks, operating cycle and open legal quest
 
 **Liquidity is a strategy, not a revenue line.** The issuer seeds the Kuru vault with unsold shards and part of the proceeds, any holder can add liquidity, and an external market maker is planned. FractaChain does not need its own capital to open markets.
 
-The deployed contracts charge no fees yet; the success fee is planned for the next version of `Offering`. Full model, in Spanish, with costs, channels, metrics and sources: [`MODELO_DE_NEGOCIO.md`](MODELO_DE_NEGOCIO.md).
+The deployed contracts charge no fees yet; the success fee is planned for the next version of `Offering`. Full model with costs, channels, metrics and sources: [`BUSINESS_MODEL.md`](BUSINESS_MODEL.md).
 
 ## Deployed on Monad testnet (chain ID 10143)
 
@@ -174,12 +174,12 @@ Not done yet: an external security audit and a run with Kuru's official testnet 
 
 | Path | What it is |
 |---|---|
-| `contracts/` | Solidity + Foundry: contracts, deploy scripts and tests. Guide: [`contracts/CONTRATOS.md`](contracts/CONTRATOS.md). |
+| `contracts/` | Solidity + Foundry: contracts, deploy scripts and tests. Guide: [`contracts/CONTRACTS.md`](contracts/CONTRACTS.md). |
 | `frontend/` | Next.js + wagmi + viem + Privy. Setup and env vars: [`frontend/README.md`](frontend/README.md). |
 | `scripts/kuru/` | CLI script that opens a Kuru market and seeds its vault. |
-| `PLAN_LEGAL_OPERATIVO.md` | Legal and operational plan (Spanish). |
-| `MODELO_DE_NEGOCIO.md` | Business model (Spanish). |
-| `PROYECTO.md` | Project log: decisions, status and open questions (Spanish). |
+| [`LEGAL_AND_OPERATIONS_PLAN.md`](LEGAL_AND_OPERATIONS_PLAN.md) | Legal and operations plan. |
+| [`BUSINESS_MODEL.md`](BUSINESS_MODEL.md) | Business model. |
+| [`PROJECT_LOG.md`](PROJECT_LOG.md) | Project log: decisions, status and open questions. |
 
 ## Quick start
 

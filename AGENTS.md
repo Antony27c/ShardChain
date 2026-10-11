@@ -16,8 +16,9 @@ Este archivo es para agentes que modifican el **frontend** (`frontend/`). La met
 | Necesitás | Leé |
 |---|---|
 | Direcciones desplegadas, qué se probó | `README.md` |
-| Funciones, estados y errores de los contratos | `contracts/CONTRATOS.md` |
-| Decisiones, estado y pendientes | `PROYECTO.md` |
+| Funciones, estados y errores de los contratos | `contracts/CONTRACTS.md` |
+| Decisiones, estado y pendientes | `PROJECT_LOG.md` |
+| Modelo de negocio y plan legal | `BUSINESS_MODEL.md`, `LEGAL_AND_OPERATIONS_PLAN.md` |
 | Variables de entorno, Railway, historial onchain | `frontend/README.md` |
 
 ## Golden path
