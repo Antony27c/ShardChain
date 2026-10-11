@@ -29,6 +29,44 @@ const price = (usdc: bigint, shards: bigint) => {
 const date = (ts: number | null, locale: string) =>
   ts ? new Date(ts * 1000).toLocaleString(locale === "en" ? "en-US" : "es-AR", { dateStyle: "short", timeStyle: "short" }) : "-";
 
+const row = (a: Activity) => {
+  const usdc = BigInt(a.usdcDelta);
+  const shards = BigInt(a.shardDelta);
+  const showPrice = a.kind === "buy" || a.kind === "sell" || a.kind === "redeem";
+  return {
+    shards: signed(shards, (v) => formatShards(v)),
+    usdc: signed(usdc, (v) => formatUsdc(v).replace(" USDC", "")),
+    price: (showPrice && price(usdc, shards)) || "-",
+  };
+};
+
+function KindBadge({ kind }: { kind: ActivityKind }) {
+  const t = useT();
+  return (
+    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${TONE[kind] ?? "bg-ink/5 text-ink"}`}>
+      {t(...ACTIVITY_LABELS[kind])}
+    </span>
+  );
+}
+
+function LotLink({ a }: { a: Activity }) {
+  return a.offering && a.symbol ? (
+    <Link href={`/lots/${a.offering}`} className="underline underline-offset-2 hover:text-accent">
+      {a.symbol}
+    </Link>
+  ) : (
+    "-"
+  );
+}
+
+function TxLink({ hash }: { hash: string }) {
+  return (
+    <a href={explorerTxUrl(hash)} target="_blank" rel="noreferrer" className="font-mono text-xs underline underline-offset-2 hover:text-accent">
+      {hash.slice(0, 8)}…
+    </a>
+  );
+}
+
 export default function ActivityPage() {
   const { address } = useAccount();
   const t = useT();
@@ -58,7 +96,7 @@ export default function ActivityPage() {
           </p>
         </div>
         {address && (
-          <button onClick={() => refetch()} disabled={isFetching} className="text-sm text-muted hover:text-ink">
+          <button onClick={() => refetch()} disabled={isFetching} className="min-h-11 text-sm text-muted hover:text-ink sm:min-h-0">
             {isFetching ? t("Actualizando...", "Refreshing...") : t("Actualizar", "Refresh")}
           </button>
         )}
@@ -74,7 +112,43 @@ export default function ActivityPage() {
       {data && data.length === 0 && <p className="mt-8 text-muted">{t("Todavía no tenés operaciones.", "You have no operations yet.")}</p>}
 
       {data && data.length > 0 && (
-        <div className={`${panel} mt-8 overflow-x-auto`}>
+        <ul className="mt-8 space-y-3 md:hidden">
+          {data.map((a) => {
+            const r = row(a);
+            return (
+              <li key={a.hash} className={`${panel} p-4 text-sm`}>
+                <div className="flex items-center justify-between gap-3">
+                  <KindBadge kind={a.kind} />
+                  <span className="text-xs tabular-nums text-muted">{date(a.timestamp, locale)}</span>
+                </div>
+                <dl className="mt-3 grid grid-cols-3 gap-3">
+                  <div>
+                    <dt className="text-xs text-muted">Shards</dt>
+                    <dd className="mt-0.5 break-all font-mono tabular-nums">{r.shards}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted">USDC</dt>
+                    <dd className="mt-0.5 break-all font-mono tabular-nums">{r.usdc}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted">{t("Precio", "Price")}</dt>
+                    <dd className="mt-0.5 break-all font-mono tabular-nums">{r.price}</dd>
+                  </div>
+                </dl>
+                <div className="mt-3 flex items-center justify-between gap-3 border-t border-line pt-3">
+                  <span className="font-mono">
+                    <LotLink a={a} />
+                  </span>
+                  <TxLink hash={a.hash} />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {data && data.length > 0 && (
+        <div className={`${panel} mt-8 hidden overflow-x-auto md:block`}>
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead className="border-b border-line text-xs text-muted">
               <tr>
@@ -89,33 +163,21 @@ export default function ActivityPage() {
             </thead>
             <tbody>
               {data.map((a) => {
-                const usdc = BigInt(a.usdcDelta);
-                const shards = BigInt(a.shardDelta);
-                const showPrice = a.kind === "buy" || a.kind === "sell" || a.kind === "redeem";
+                const r = row(a);
                 return (
                   <tr key={a.hash} className="border-b border-line last:border-0">
                     <td className="whitespace-nowrap px-4 py-3 tabular-nums text-muted">{date(a.timestamp, locale)}</td>
                     <td className="px-4 py-3">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${TONE[a.kind] ?? "bg-ink/5 text-ink"}`}>
-                        {t(...ACTIVITY_LABELS[a.kind])}
-                      </span>
+                      <KindBadge kind={a.kind} />
                     </td>
                     <td className="px-4 py-3 font-mono">
-                      {a.offering && a.symbol ? (
-                        <Link href={`/lots/${a.offering}`} className="underline underline-offset-2 hover:text-accent">
-                          {a.symbol}
-                        </Link>
-                      ) : (
-                        "-"
-                      )}
+                      <LotLink a={a} />
                     </td>
-                    <td className="px-4 py-3 text-right font-mono tabular-nums">{signed(shards, (v) => formatShards(v))}</td>
-                    <td className="px-4 py-3 text-right font-mono tabular-nums">{signed(usdc, (v) => formatUsdc(v).replace(" USDC", ""))}</td>
-                    <td className="px-4 py-3 text-right font-mono tabular-nums">{(showPrice && price(usdc, shards)) || "-"}</td>
+                    <td className="px-4 py-3 text-right font-mono tabular-nums">{r.shards}</td>
+                    <td className="px-4 py-3 text-right font-mono tabular-nums">{r.usdc}</td>
+                    <td className="px-4 py-3 text-right font-mono tabular-nums">{r.price}</td>
                     <td className="px-4 py-3 text-right">
-                      <a href={explorerTxUrl(a.hash)} target="_blank" rel="noreferrer" className="font-mono text-xs underline underline-offset-2 hover:text-accent">
-                        {a.hash.slice(0, 8)}…
-                      </a>
+                      <TxLink hash={a.hash} />
                     </td>
                   </tr>
                 );
