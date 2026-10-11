@@ -359,11 +359,15 @@ export function SoonSection() {
     <>
       <section className="space-y-5 sm:space-y-6">
         <h2 className="text-2xl font-extrabold sm:text-3xl">{soon}</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-6 xl:grid-cols-5">
           {soonItems.map(([title, desc], i) => {
             const Icon = SOON_ICONS[i];
+            const rest = soonItems.length % 3;
+            const span =
+              i >= soonItems.length - rest ? (rest === 2 ? "lg:col-span-3" : "lg:col-span-6") : "lg:col-span-2";
+            const lastOdd = soonItems.length % 2 === 1 && i === soonItems.length - 1 ? "sm:col-span-2" : "";
             return (
-              <div key={title} className="crystal-card space-y-3 rounded-2xl p-5 sm:rounded-3xl sm:p-6">
+              <div key={title} className={`crystal-card space-y-3 rounded-2xl p-5 sm:rounded-3xl sm:p-6 ${lastOdd} ${span} xl:col-span-1`}>
                 <Icon className="h-5 w-5" />
                 <h4 className="font-extrabold">{title}</h4>
                 <p className="text-sm text-muted">{desc}</p>

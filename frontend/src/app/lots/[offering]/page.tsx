@@ -50,7 +50,7 @@ export default function LotPage() {
   const { locale } = useI18n();
 
   const back = (
-    <Link href="/market" className="text-sm text-muted transition-colors hover:text-ink">
+    <Link href="/market" className="inline-flex min-h-11 items-center text-sm text-muted transition-colors hover:text-ink sm:min-h-0">
       &larr; {t("Licitaciones", "Auctions")}
     </Link>
   );
@@ -96,46 +96,48 @@ export default function LotPage() {
     <div className="mx-auto max-w-7xl px-4 pb-20 pt-8 md:px-6 md:pt-10">
       {back}
 
-      <div className="mt-6 grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-12">
-        <section className="lg:sticky lg:top-6 lg:self-start">
-          <header className="reveal" style={step(0)}>
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <h1 className="text-3xl font-semibold leading-[1.1] tracking-tighter md:text-4xl">{lot.name}</h1>
-              <StatusBadge status={lot.status} />
-            </div>
-            <p className="mt-2 text-muted">
-              {lot.asset.assetType}, {lot.asset.quantity.toString()} {lot.asset.unit}, {t("campaña", "season")} {lot.asset.campaign}
-            </p>
-          </header>
+      <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-[5fr_7fr] lg:gap-12">
+        <div className="contents lg:sticky lg:top-6 lg:block lg:self-start">
+          <section className="order-1">
+            <header className="reveal" style={step(0)}>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <h1 className="text-3xl font-semibold leading-[1.1] tracking-tighter md:text-4xl">{lot.name}</h1>
+                <StatusBadge status={lot.status} />
+              </div>
+              <p className="mt-2 text-muted">
+                {lot.asset.assetType}, {lot.asset.quantity.toString()} {lot.asset.unit}, {t("campaña", "season")} {lot.asset.campaign}
+              </p>
+            </header>
 
-          <div className="reveal mt-10" style={step(1)}>
-            <ProgressBar raised={lot.totalRaised} softCap={lot.softCap} hardCap={lot.hardCap} index={1} />
-          </div>
+            <div className="reveal mt-10" style={step(1)}>
+              <ProgressBar raised={lot.totalRaised} softCap={lot.softCap} hardCap={lot.hardCap} index={1} />
+            </div>
 
-          <dl
-            className="reveal mt-10 grid grid-cols-2 gap-6 border-t border-line pt-6 text-sm sm:grid-cols-4"
-            style={step(2)}
-          >
-            <div>
-              <dt className="text-muted">{t("Precio por shard", "Price per shard")}</dt>
-              <dd className="mt-1 font-mono font-medium tabular-nums">{formatPricePerShard(lot.pricePerShard)}</dd>
-            </div>
-            <div>
-              <dt className="text-muted">Token</dt>
-              <dd className="mt-1 font-mono font-medium">{lot.symbol}</dd>
-            </div>
-            <div>
-              <dt className="text-muted">{t("Cierra", "Closes")}</dt>
-              <dd className="mt-1 font-medium tabular-nums">{formatDate(lot.deadline, locale)}</dd>
-            </div>
-            <div>
-              <dt className="text-muted">{t("Tiempo restante", "Time left")}</dt>
-              <dd className="mt-1 font-mono font-medium tabular-nums">{timeLeft(lot.deadline, now, t("Finalizada", "Ended"))}</dd>
-            </div>
-          </dl>
+            <dl
+              className="reveal mt-10 grid grid-cols-2 gap-6 border-t border-line pt-6 text-sm sm:grid-cols-4"
+              style={step(2)}
+            >
+              <div>
+                <dt className="text-muted">{t("Precio por shard", "Price per shard")}</dt>
+                <dd className="mt-1 font-mono font-medium tabular-nums">{formatPricePerShard(lot.pricePerShard)}</dd>
+              </div>
+              <div>
+                <dt className="text-muted">Token</dt>
+                <dd className="mt-1 font-mono font-medium">{lot.symbol}</dd>
+              </div>
+              <div>
+                <dt className="text-muted">{t("Cierra", "Closes")}</dt>
+                <dd className="mt-1 font-medium tabular-nums">{formatDate(lot.deadline, locale)}</dd>
+              </div>
+              <div>
+                <dt className="text-muted">{t("Tiempo restante", "Time left")}</dt>
+                <dd className="mt-1 font-mono font-medium tabular-nums">{timeLeft(lot.deadline, now, t("Finalizada", "Ended"))}</dd>
+              </div>
+            </dl>
+          </section>
 
-          <div
-            className="reveal mt-12 grid gap-10 border-t border-line pt-8"
+          <section
+            className="reveal order-3 grid gap-10 border-t border-line pt-8 lg:mt-12"
             style={step(3)}
           >
             <div>
@@ -148,10 +150,10 @@ export default function LotPage() {
               </ol>
             </div>
             <AssetSheet lot={lot} />
-          </div>
-        </section>
+          </section>
+        </div>
 
-        <aside className="lg:min-w-0">
+        <aside className="order-2 lg:order-none lg:min-w-0">
           <LotActions lot={lot} account={investor.address} />
         </aside>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
@@ -54,7 +54,7 @@ function BookSide({
             key={`${side}-${price}`}
             type="button"
             onClick={() => onPick(level)}
-            className="relative grid w-full grid-cols-3 px-4 py-1.5 text-right font-mono text-xs tabular-nums transition-colors hover:bg-ink/5"
+            className="relative grid w-full grid-cols-3 gap-2 px-3 py-2 text-right font-mono text-xs tabular-nums transition-colors hover:bg-ink/5 sm:px-4 sm:py-1.5"
           >
             <span
               aria-hidden
@@ -77,6 +77,7 @@ function Market({ lot, account }: { lot: Lot; account?: `0x${string}` }) {
   const kuru = useKuruMarket(lot.token);
   const book = useBook(kuru.market);
   const [preset, setPreset] = useState<TradePreset>();
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const fmt = (n: number, d = 4) => n.toLocaleString(locale === "en" ? "en-US" : "es-AR", { maximumFractionDigits: d });
   const asks = book.data?.asks ?? [];
@@ -87,12 +88,14 @@ function Market({ lot, account }: { lot: Lot; account?: `0x${string}` }) {
   const mid = bestAsk && bestBid ? (bestAsk + bestBid) / 2 : bestAsk ?? bestBid;
   const spread = bestAsk && bestBid ? ((bestAsk - bestBid) / ((bestAsk + bestBid) / 2)) * 100 : undefined;
 
-  const pick = ([price, size]: Level, side: "ask" | "bid") =>
+  const pick = ([price, size]: Level, side: "ask" | "bid") => {
     setPreset({
       side: side === "ask" ? "buy" : "sell",
       amount: side === "ask" ? (price * size).toFixed(2) : size.toFixed(2),
       nonce: Date.now(),
     });
+    if (!window.matchMedia("(min-width: 1024px)").matches) panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   if (kuru.loading) return <p className="mt-8 text-muted">{t("Buscando el mercado en Kuru...", "Looking up the market on Kuru...")}</p>;
 
@@ -148,10 +151,16 @@ function Market({ lot, account }: { lot: Lot; account?: `0x${string}` }) {
           ))}
         </dl>
 
-        <div className="grid grid-cols-3 px-4 pt-3 text-right text-[11px] uppercase tracking-wider text-muted">
-          <span className="text-left">{t("Precio (USDC)", "Price (USDC)")}</span>
-          <span>{t("Cantidad", "Size")} ({lot.symbol})</span>
-          <span>{t("Total (USDC)", "Total (USDC)")}</span>
+        <div className="grid grid-cols-3 gap-2 px-3 pt-3 text-right text-[11px] uppercase tracking-wider text-muted sm:px-4">
+          <span className="text-left">
+            {t("Precio", "Price")} <span className="hidden sm:inline">(USDC)</span>
+          </span>
+          <span>
+            {t("Cantidad", "Size")} <span className="hidden sm:inline">({lot.symbol})</span>
+          </span>
+          <span>
+            Total <span className="hidden sm:inline">(USDC)</span>
+          </span>
         </div>
 
         {book.error && <p className={`${notice.bad} m-4`}>{book.error.message}</p>}
@@ -161,7 +170,7 @@ function Market({ lot, account }: { lot: Lot; account?: `0x${string}` }) {
           <div className="py-2">
             {asks.length === 0 && <p className="px-4 py-2 text-xs text-muted">{t("Sin órdenes de venta", "No sell orders")}</p>}
             <BookSide levels={[...asks].reverse()} side="ask" max={max} fmt={fmt} onPick={(l) => pick(l, "ask")} />
-            <div className="my-1 flex items-center justify-between border-y border-line bg-ink/5 px-4 py-2 font-mono text-sm tabular-nums">
+            <div className="my-1 flex items-center justify-between border-y border-line bg-ink/5 px-3 py-2 font-mono text-sm tabular-nums sm:px-4">
               <span className="font-semibold">{mid ? `${fmt(mid, 5)} USDC` : "-"}</span>
               <span className="text-xs text-muted">
                 {t("Spread", "Spread")} {spread !== undefined ? `${fmt(spread, 2)}%` : "-"}
@@ -182,7 +191,7 @@ function Market({ lot, account }: { lot: Lot; account?: `0x${string}` }) {
       </div>
 
       <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-        <div className={`${panel} reveal p-6`} style={step(2)}>
+        <div ref={panelRef} className={`${panel} reveal scroll-mt-24 p-5 sm:p-6`} style={step(2)}>
           <h2 className="mb-5 font-semibold tracking-tight">{t("Orden de mercado", "Market order")}</h2>
           <TradePanel lot={lot} market={kuru.info} account={account} preset={preset} />
         </div>
@@ -243,7 +252,7 @@ export default function OrderbookPage() {
                 role="tab"
                 aria-selected={l.token === current.token}
                 onClick={() => setSelected(l.token)}
-                className={`rounded-full border px-4 py-2 font-mono text-xs font-bold transition-colors ${
+                className={`min-h-11 rounded-full border px-4 py-2 font-mono text-xs font-bold transition-colors sm:min-h-0 ${
                   l.token === current.token ? "border-ink bg-ink text-bg" : "border-line bg-surface text-muted hover:text-ink"
                 }`}
               >
